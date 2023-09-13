@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -9,18 +9,17 @@ import { mimeType } from './mime-type.validator'
 import { PhotoWallService } from '../Services/photo-wall.service'
 import { IImage } from 'ng-simple-slideshow'
 import { ConfigurationService } from '../Services/configuration.service'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 library.add(faTwitter)
-dom.watch()
 
 @Component({
   selector: 'app-photo-wall',
   templateUrl: './photo-wall.component.html',
   styleUrls: ['./photo-wall.component.scss']
-})
+  })
 export class PhotoWallComponent implements OnInit {
   public emptyState: boolean = true
   public imagePreview: string

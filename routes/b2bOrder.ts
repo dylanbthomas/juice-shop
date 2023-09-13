@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -7,7 +7,7 @@ import vm = require('vm')
 import { Request, Response, NextFunction } from 'express'
 import challengeUtils = require('../lib/challengeUtils')
 
-const utils = require('../lib/utils')
+import * as utils from '../lib/utils'
 const security = require('../lib/insecurity')
 const safeEval = require('notevil')
 const challenges = require('../data/datacache').challenges

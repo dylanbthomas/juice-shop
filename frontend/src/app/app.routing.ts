@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -41,7 +41,23 @@ import { DeliveryMethodComponent } from './delivery-method/delivery-method.compo
 import { PhotoWallComponent } from './photo-wall/photo-wall.component'
 import { DeluxeUserComponent } from './deluxe-user/deluxe-user.component'
 import { AccountingGuard, AdminGuard, LoginGuard } from './app.guard'
+import { NFTUnlockComponent } from './nft-unlock/nft-unlock.component'
+import { ScoreBoardPreviewComponent } from './score-board-preview/score-board-preview.component'
+import { Web3SandboxComponent } from './web3-sandbox/web3-sandbox.component'
 
+const loadFaucetModule = async () => {
+  const module = await import('./faucet/faucet.module')
+  return module.FaucetModule
+}
+const loadWeb3WalletModule = async () => {
+  const module = await import('./wallet-web3/wallet-web3.module')
+  return module.WalletWeb3Module
+}
+
+const loadWeb3SandboxtModule = async () => {
+  const module = await import('./web3-sandbox/web3-sandbox.module')
+  return module.FaucetModule
+}
 // vuln-code-snippet start adminSectionChallenge scoreBoardChallenge
 const routes: Routes = [
   { // vuln-code-snippet neutral-line adminSectionChallenge
@@ -159,6 +175,10 @@ const routes: Routes = [
     path: 'score-board', // vuln-code-snippet vuln-line scoreBoardChallenge
     component: ScoreBoardComponent // vuln-code-snippet neutral-line scoreBoardChallenge
   }, // vuln-code-snippet neutral-line scoreBoardChallenge
+  { // vuln-code-snippet hide-line
+    path: 'score-board-preview', // vuln-code-snippet hide-line
+    component: ScoreBoardPreviewComponent // vuln-code-snippet hide-line
+  }, // vuln-code-snippet hide-line
   {
     path: 'track-result',
     component: TrackResultComponent
@@ -200,6 +220,22 @@ const routes: Routes = [
       }
     ]
   },
+  {
+    path: 'juicy-nft',
+    component: NFTUnlockComponent
+  },
+  {
+    path: 'wallet-web3',
+    loadChildren: async () => await loadWeb3WalletModule()
+  },
+  {
+    path: 'web3-sandbox',
+    loadChildren: async () => await loadWeb3SandboxtModule()
+  },
+  {
+    path: 'bee-haven',
+    loadChildren: async () => await loadFaucetModule()
+  },
   // vuln-code-snippet start tokenSaleChallenge
   {
     matcher: oauthMatcher,
@@ -221,7 +257,7 @@ const routes: Routes = [
 ]
 // vuln-code-snippet end adminSectionChallenge scoreBoardChallenge
 
-export const Routing = RouterModule.forRoot(routes, { useHash: true, relativeLinkResolution: 'legacy' })
+export const Routing = RouterModule.forRoot(routes, { useHash: true })
 
 export function oauthMatcher (url: UrlSegment[]): UrlMatchResult {
   if (url.length === 0) {

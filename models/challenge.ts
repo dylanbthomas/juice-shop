@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -25,7 +25,7 @@ InferCreationAttributes<Challenge>
   declare hintUrl: string | null
   declare mitigationUrl: CreationOptional<string> | null
   declare key: string
-  declare disabledEnv: CreationOptional<string>
+  declare disabledEnv: CreationOptional<string> | null
   declare tutorialOrder: CreationOptional<number> | null
   declare tags: string | undefined
   declare solved: CreationOptional<boolean>

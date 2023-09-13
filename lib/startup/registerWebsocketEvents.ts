@@ -1,18 +1,21 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
-import config = require('config')
+import config from 'config'
+import * as utils from '../utils'
+import { Server } from 'socket.io'
+
 const notifications = require('../../data/datacache').notifications
-const utils = require('../utils')
 const challengeUtils = require('../challengeUtils')
 const security = require('../insecurity')
 const challenges = require('../../data/datacache').challenges
 let firstConnectedSocket: any = null
 
 const registerWebsocketEvents = (server: any) => {
-  const io = require('socket.io')(server)
+  const io = new Server(server, { cors: { origin: 'http://localhost:4200' } })
+  // @ts-expect-error
   global.io = io
 
   io.on('connection', (socket: any) => {

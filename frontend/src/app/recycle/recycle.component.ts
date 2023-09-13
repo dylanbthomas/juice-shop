@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -8,7 +8,7 @@ import { UserService } from '../Services/user.service'
 import { RecycleService } from '../Services/recycle.service'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { UntypedFormControl, Validators } from '@angular/forms'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { FormSubmitService } from '../Services/form-submit.service'
 import { AddressComponent } from '../address/address.component'
@@ -16,13 +16,12 @@ import { TranslateService } from '@ngx-translate/core'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 library.add(faPaperPlane)
-dom.watch()
 
 @Component({
   selector: 'app-recycle',
   templateUrl: './recycle.component.html',
   styleUrls: ['./recycle.component.scss']
-})
+  })
 export class RecycleComponent implements OnInit {
   @ViewChild('addressComp', { static: true }) public addressComponent: AddressComponent
   public requestorControl: UntypedFormControl = new UntypedFormControl({ value: '', disabled: true }, [])

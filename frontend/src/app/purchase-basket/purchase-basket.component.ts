@@ -1,25 +1,24 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { BasketService } from '../Services/basket.service'
 import { UserService } from '../Services/user.service'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/'
 import { faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { DeluxeGuard } from '../app.guard'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 library.add(faTrashAlt, faMinusSquare, faPlusSquare)
-dom.watch()
 
 @Component({
   selector: 'app-purchase-basket',
   templateUrl: './purchase-basket.component.html',
   styleUrls: ['./purchase-basket.component.scss']
-})
+  })
 export class PurchaseBasketComponent implements OnInit {
   @Input('allowEdit') public allowEdit: boolean = false
   @Input('displayTotal') public displayTotal: boolean = false

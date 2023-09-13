@@ -1,11 +1,13 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
 import frisby = require('frisby')
-import config = require('config')
-const path = require('path')
+import { expect } from '@jest/globals'
+import config from 'config'
+import path from 'path'
+
 const fs = require('fs')
 
 const jsonHeader = { 'content-type': 'application/json' }

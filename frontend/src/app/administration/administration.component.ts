@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -11,18 +11,17 @@ import { MatTableDataSource } from '@angular/material/table'
 import { UserService } from '../Services/user.service'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArchive, faEye, faHome, faTrashAlt, faUser } from '@fortawesome/free-solid-svg-icons'
 import { MatPaginator } from '@angular/material/paginator'
 
 library.add(faUser, faEye, faHome, faArchive, faTrashAlt)
-dom.watch()
 
 @Component({
   selector: 'app-administration',
   templateUrl: './administration.component.html',
   styleUrls: ['./administration.component.scss']
-})
+  })
 export class AdministrationComponent implements OnInit {
   public userDataSource: any
   public userDataSourceHidden: any

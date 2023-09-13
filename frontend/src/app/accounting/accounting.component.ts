@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -9,13 +9,12 @@ import { MatPaginator } from '@angular/material/paginator'
 import { Subscription } from 'rxjs'
 import { MatTableDataSource } from '@angular/material/table'
 import { QuantityService } from '../Services/quantity.service'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { OrderHistoryService } from '../Services/order-history.service'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 library.add(faCheck)
-dom.watch()
 
 interface Order {
   id: string
@@ -28,7 +27,7 @@ interface Order {
   selector: 'app-accounting',
   templateUrl: './accounting.component.html',
   styleUrls: ['./accounting.component.scss']
-})
+  })
 export class AccountingComponent implements AfterViewInit, OnDestroy {
   public orderHistoryColumns = ['OrderId', 'Price', 'Status', 'StatusButton']
   @ViewChild('paginatorOrderHistory', { static: true }) paginatorOrderHistory: MatPaginator

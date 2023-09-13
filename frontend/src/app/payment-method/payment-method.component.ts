@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -7,20 +7,19 @@ import { UntypedFormControl, Validators } from '@angular/forms'
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { PaymentService } from '../Services/payment.service'
 import { MatTableDataSource } from '@angular/material/table'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons/'
 import { TranslateService } from '@ngx-translate/core'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 library.add(faPaperPlane, faTrashAlt)
-dom.watch()
 
 @Component({
   selector: 'app-payment-method',
   templateUrl: './payment-method.component.html',
   styleUrls: ['./payment-method.component.scss']
-})
+  })
 
 export class PaymentMethodComponent implements OnInit {
   @Output() emitSelection = new EventEmitter()

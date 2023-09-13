@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
 /* jslint node: true */
-import config = require('config')
+import config from 'config'
 import {
   InferAttributes,
   InferCreationAttributes,
@@ -14,8 +14,8 @@ import {
   Sequelize
 } from 'sequelize'
 import challengeUtils = require('../lib/challengeUtils')
+import * as utils from '../lib/utils'
 const security = require('../lib/insecurity')
-const utils = require('../lib/utils')
 const challenges = require('../data/datacache').challenges
 
 class User extends Model<
@@ -34,9 +34,9 @@ InferCreationAttributes<User>
   declare isActive: CreationOptional<boolean>
 }
 
-const UserModelInit = (sequelize: Sequelize) => {
+const UserModelInit = (sequelize: Sequelize) => { // vuln-code-snippet start weakPasswordChallenge
   User.init(
-    {
+    { // vuln-code-snippet hide-start
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -70,13 +70,13 @@ const UserModelInit = (sequelize: Sequelize) => {
           }
           this.setDataValue('email', email)
         }
-      },
+      }, // vuln-code-snippet hide-end
       password: {
         type: DataTypes.STRING,
         set (clearTextPassword) {
-          this.setDataValue('password', security.hash(clearTextPassword))
+          this.setDataValue('password', security.hash(clearTextPassword)) // vuln-code-snippet vuln-line weakPasswordChallenge
         }
-      },
+      }, // vuln-code-snippet end weakPasswordChallenge
       role: {
         type: DataTypes.STRING,
         defaultValue: 'customer',

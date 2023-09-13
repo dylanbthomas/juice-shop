@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
 import frisby = require('frisby')
-import config = require('config')
+import config from 'config'
+import jwt from 'jsonwebtoken'
 const Joi = frisby.Joi
 const security = require('../../lib/insecurity')
 
 const otplib = require('otplib')
-const jwt = require('jsonwebtoken')
 
 const REST_URL = 'http://localhost:3000/rest'
 const API_URL = 'http://localhost:3000/api'

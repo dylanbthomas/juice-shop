@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -31,7 +31,7 @@ import { MatChipsModule } from '@angular/material/chips'
 import { MatDialogModule } from '@angular/material/dialog'
 import { CodeSnippetService } from '../Services/code-snippet.service'
 import { LocalBackupService } from '../Services/local-backup.service'
-
+import { ActivatedRoute, RouterModule } from '@angular/router'
 class MockSocket {
   on (str: string, callback: Function) {
     callback(str)
@@ -87,7 +87,8 @@ describe('ScoreBoardComponent', () => {
         MatIconModule,
         MatSnackBarModule,
         MatChipsModule,
-        MatDialogModule
+        MatDialogModule,
+        RouterModule.forRoot([])
       ],
       declarations: [ScoreBoardComponent, ChallengeStatusBadgeComponent],
       providers: [
@@ -97,7 +98,15 @@ describe('ScoreBoardComponent', () => {
         { provide: ConfigurationService, useValue: configurationService },
         { provide: DomSanitizer, useValue: sanitizer },
         { provide: LocalBackupService, useValue: localBackupService },
-        { provide: SocketIoService, useValue: socketIoService }
+        { provide: SocketIoService, useValue: socketIoService },
+        {
+ provide: ActivatedRoute,
+useValue: {
+ snapshot: {
+          queryParams: { challenge: 'value' }
+        }
+}
+}
       ]
     })
       .compileComponents()

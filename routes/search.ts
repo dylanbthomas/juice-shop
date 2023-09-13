@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -7,7 +7,7 @@ import models = require('../models/index')
 import { Request, Response, NextFunction } from 'express'
 import { UserModel } from '../models/user'
 
-const utils = require('../lib/utils')
+import * as utils from '../lib/utils'
 const challengeUtils = require('../lib/challengeUtils')
 const challenges = require('../data/datacache').challenges
 

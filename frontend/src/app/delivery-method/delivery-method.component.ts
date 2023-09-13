@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -10,18 +10,17 @@ import { MatTableDataSource } from '@angular/material/table'
 import { Router } from '@angular/router'
 import { Location } from '@angular/common'
 import { DeliveryMethod } from '../Models/deliveryMethod.model'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faRocket, faShippingFast, faTruck } from '@fortawesome/free-solid-svg-icons'
 import { SelectionModel } from '@angular/cdk/collections'
 
 library.add(faRocket, faShippingFast, faTruck)
-dom.watch()
 
 @Component({
   selector: 'app-delivery-method',
   templateUrl: './delivery-method.component.html',
   styleUrls: ['./delivery-method.component.scss']
-})
+  })
 export class DeliveryMethodComponent implements OnInit {
   public displayedColumns = ['Selection', 'Name', 'Price', 'ETA']
   public methods: DeliveryMethod[]

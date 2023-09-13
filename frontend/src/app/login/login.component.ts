@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -8,7 +8,7 @@ import { WindowRefService } from '../Services/window-ref.service'
 import { Router } from '@angular/router'
 import { Component, NgZone, OnInit } from '@angular/core'
 import { UntypedFormControl, Validators } from '@angular/forms'
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { UserService } from '../Services/user.service'
 import { faEye, faEyeSlash, faKey } from '@fortawesome/free-solid-svg-icons'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
@@ -17,7 +17,6 @@ import { ConfigurationService } from '../Services/configuration.service'
 import { BasketService } from '../Services/basket.service'
 
 library.add(faKey, faEye, faEyeSlash, faGoogle)
-dom.watch()
 
 const oauthProviderUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
 
@@ -26,9 +25,12 @@ const oauthProviderUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
+
 export class LoginComponent implements OnInit {
   public emailControl = new UntypedFormControl('', [Validators.required])
-  public passwordControl = new UntypedFormControl('', [Validators.required])
+
+  public passwordControl = new UntypedFormControl('', [Validators.required, Validators.minLength(1)])
+
   public hide = true
   public user: any
   public rememberMe: UntypedFormControl = new UntypedFormControl(false)

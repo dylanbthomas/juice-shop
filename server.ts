@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 import dataErasure from './routes/dataErasure'
@@ -20,10 +20,14 @@ import { BasketItemModel } from './models/basketitem'
 import { FeedbackModel } from './models/feedback'
 import { ProductModel } from './models/product'
 import { WalletModel } from './models/wallet'
+import logger from './lib/logger'
+import config from 'config'
+import path from 'path'
+import morgan from 'morgan'
+import colors from 'colors/safe'
+import * as utils from './lib/utils'
+
 const startTime = Date.now()
-const path = require('path')
-const morgan = require('morgan')
-const colors = require('colors/safe')
 const finale = require('finale-rest')
 const express = require('express')
 const compression = require('compression')
@@ -82,10 +86,11 @@ const recycles = require('./routes/recycles')
 const b2bOrder = require('./routes/b2bOrder')
 const showProductReviews = require('./routes/showProductReviews')
 const createProductReviews = require('./routes/createProductReviews')
+const checkKeys = require('./routes/checkKeys')
+const nftMint = require('./routes/nftMint')
+const web3Wallet = require('./routes/web3Wallet')
 const updateProductReviews = require('./routes/updateProductReviews')
 const likeProductReviews = require('./routes/likeProductReviews')
-const logger = require('./lib/logger')
-const utils = require('./lib/utils')
 const security = require('./lib/insecurity')
 const datacreator = require('./data/datacreator')
 const app = express()
@@ -101,7 +106,6 @@ const updateUserProfile = require('./routes/updateUserProfile')
 const videoHandler = require('./routes/videoHandler')
 const twoFactorAuth = require('./routes/2fa')
 const languageList = require('./routes/languages')
-const config = require('config')
 const imageCaptcha = require('./routes/imageCaptcha')
 const dataExport = require('./routes/dataExport')
 const address = require('./routes/address')
@@ -133,7 +137,7 @@ const collectDurationPromise = (name: string, func: Function) => {
 }
 void collectDurationPromise('validatePreconditions', require('./lib/startup/validatePreconditions'))()
 void collectDurationPromise('cleanupFtpFolder', require('./lib/startup/cleanupFtpFolder'))()
-void collectDurationPromise('validateConfig', require('./lib/startup/validateConfig'))()
+void collectDurationPromise('validateConfig', require('./lib/startup/validateConfig'))({})
 
 // Reloads the i18n files in case of server restarts or starts.
 async function restoreOverwrittenFilesWithOriginals () {
@@ -217,7 +221,7 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     res.end = function () {
       if (arguments.length) {
         const reqPath = req.originalUrl.replace(/\?.*$/, '')
-        const currentFolder = reqPath.split('/').pop()
+        const currentFolder = reqPath.split('/').pop() as string
         arguments[0] = arguments[0].replace(/a href="([^"]+?)"/gi, function (matchString: string, matchedUrl: string) {
           let relativePath = path.relative(reqPath, matchedUrl)
           if (relativePath === '') {
@@ -361,8 +365,21 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   /* Captcha Bypass challenge verification */
   app.post('/api/Feedbacks', verify.captchaBypassChallenge())
   /* User registration challenge verifications before finale takes over */
+  app.post('/api/Users', (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.email !== undefined && req.body.password !== undefined && req.body.passwordRepeat !== undefined) {
+      if (req.body.email.length !== 0 && req.body.password.length !== 0) {
+        req.body.email = req.body.email.trim()
+        req.body.password = req.body.password.trim()
+        req.body.passwordRepeat = req.body.passwordRepeat.trim()
+      } else {
+        res.status(400).send(res.__('Invalid email/password cannot be empty'))
+      }
+    }
+    next()
+  })
   app.post('/api/Users', verify.registerAdminChallenge())
   app.post('/api/Users', verify.passwordRepeatChallenge()) // vuln-code-snippet hide-end
+  app.post('/api/Users', verify.emptyUserRegistration())
   /* Unauthorized users are not allowed to access B2B API */
   app.use('/b2b/v2', security.isAuthorized())
   /* Check if the quantity is available in stock and limit per user not exceeded, then add item to basket */
@@ -443,7 +460,8 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     const resource = finale.resource({
       model,
       endpoints: [`/api/${name}s`, `/api/${name}s/:id`],
-      excludeAttributes: exclude
+      excludeAttributes: exclude,
+      pagination: false
     })
 
     // create a wallet when a new user is registered using API
@@ -569,6 +587,13 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   app.patch('/rest/products/reviews', security.isAuthorized(), updateProductReviews())
   app.post('/rest/products/reviews', security.isAuthorized(), likeProductReviews())
 
+  /* Web3 API endpoints */
+  app.post('/rest/web3/submitKey', checkKeys.checkKeys())
+  app.get('/rest/web3/nftUnlocked', checkKeys.nftUnlocked())
+  app.get('/rest/web3/nftMintListen', nftMint.nftMintListener())
+  app.post('/rest/web3/walletNFTVerify', nftMint.walletNFTVerify())
+  app.post('/rest/web3/walletExploitAddress', web3Wallet.contractExploitListener())
+
   /* B2B Order API */
   app.post('/b2b/v2/orders', b2bOrder())
 
@@ -637,13 +662,13 @@ const uploadToDisk = multer({
 
 const expectedModels = ['Address', 'Basket', 'BasketItem', 'Captcha', 'Card', 'Challenge', 'Complaint', 'Delivery', 'Feedback', 'ImageCaptcha', 'Memory', 'PrivacyRequestModel', 'Product', 'Quantity', 'Recycle', 'SecurityAnswer', 'SecurityQuestion', 'User', 'Wallet']
 while (!expectedModels.every(model => Object.keys(sequelize.models).includes(model))) {
-  logger.info(`Entity models ${colors.bold(Object.keys(sequelize.models).length)} of ${colors.bold(expectedModels.length)} are initialized (${colors.yellow('WAITING')})`)
+  logger.info(`Entity models ${colors.bold(Object.keys(sequelize.models).length.toString())} of ${colors.bold(expectedModels.length.toString())} are initialized (${colors.yellow('WAITING')})`)
 }
-logger.info(`Entity models ${colors.bold(Object.keys(sequelize.models).length)} of ${colors.bold(expectedModels.length)} are initialized (${colors.green('OK')})`)
+logger.info(`Entity models ${colors.bold(Object.keys(sequelize.models).length.toString())} of ${colors.bold(expectedModels.length.toString())} are initialized (${colors.green('OK')})`)
 
 // vuln-code-snippet start exposedMetricsChallenge
 /* Serve metrics */
-let metricsUpdateLoop
+let metricsUpdateLoop: any
 const Metrics = metrics.observeMetrics() // vuln-code-snippet neutral-line exposedMetricsChallenge
 const customizeEasterEgg = require('./lib/startup/customizeEasterEgg') // vuln-code-snippet hide-line
 app.get('/metrics', metrics.serveMetrics()) // vuln-code-snippet vuln-line exposedMetricsChallenge
@@ -663,10 +688,10 @@ export async function start (readyCallback: Function) {
   metricsUpdateLoop = Metrics.updateLoop() // vuln-code-snippet neutral-line exposedMetricsChallenge
 
   server.listen(port, () => {
-    logger.info(colors.cyan(`Server listening on port ${colors.bold(port)}`))
+    logger.info(colors.cyan(`Server listening on port ${colors.bold(`${port}`)}`))
     startupGauge.set({ task: 'ready' }, (Date.now() - startTime) / 1000)
     if (process.env.BASE_PATH !== '') {
-      logger.info(colors.cyan(`Server using proxy base path ${colors.bold(process.env.BASE_PATH)} for redirects`))
+      logger.info(colors.cyan(`Server using proxy base path ${colors.bold(`${process.env.BASE_PATH}`)} for redirects`))
     }
     registerWebsocketEvents(server)
     if (readyCallback) {

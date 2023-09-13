@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -8,11 +8,11 @@ import { Request, Response, NextFunction } from 'express'
 
 import { UserModel } from '../models/user'
 import challengeUtils = require('../lib/challengeUtils')
-const utils = require('../lib/utils')
+import config from 'config'
+import * as utils from '../lib/utils'
 const security = require('../lib/insecurity')
 const challenges = require('../data/datacache').challenges
 const pug = require('pug')
-const config = require('config')
 const themes = require('../views/themes/themes').themes
 const Entities = require('html-entities').AllHtmlEntities
 const entities = new Entities()
@@ -40,7 +40,7 @@ module.exports = function getUserProfile () {
           } else {
             username = '\\' + username
           }
-          const theme = themes[config.get('application.theme')]
+          const theme = themes[config.get<string>('application.theme')]
           if (username) {
             template = template.replace(/_username_/g, username)
           }
@@ -66,7 +66,7 @@ module.exports = function getUserProfile () {
           next(error)
         })
       } else {
-        next(new Error('Blocked illegal activity by ' + req.connection.remoteAddress))
+        next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
       }
     })
   }

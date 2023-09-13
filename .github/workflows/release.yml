@@ -3,13 +3,16 @@ on:
   push:
     tags:
       - v*
+env:
+  ANGULAR_CLI_VERSION: 15
+  CYCLONEDX_NPM_VERSION: '^1.12.0'
 jobs:
   package:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [14, 16, 18]
+        node-version: [16, 18, 20.5]
     steps:
       - name: "Check out Git repository"
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f #v2: v2.3.4 available
@@ -19,7 +22,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: "Install CLI tools"
         run: |
-          npm install -g @angular/cli
+          npm install -g @angular/cli@$ANGULAR_CLI_VERSION
+          npm install -g @cyclonedx/cyclonedx-npm@$CYCLONEDX_NPM_VERSION
           npm install -g grunt-cli
       - name: "Set packaging options for Grunt"
         run: |
@@ -36,7 +40,6 @@ jobs:
       - name: "Package application"
         run: |
           npm install --production
-          npm install -g grunt-cli
           npm run package:ci
       - name: 'Attach packaged archive to tag release'
         uses: softprops/action-gh-release@v1
@@ -66,7 +69,7 @@ jobs:
         run: |
           echo "VCS_REF=`git rev-parse --short HEAD`" >> $GITHUB_ENV
           echo "BUILD_DATE=`date -u +”%Y-%m-%dT%H:%M:%SZ”`" >> $GITHUB_ENV
-      - name: "Build and push for AMD processors"
+      - name: "Build and push for AMD64 and ARM64 processors"
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229 #note: newer is available
         with:
           context: .
@@ -78,18 +81,7 @@ jobs:
           build-args: |
             VCS_REF=${{ env.VCS_REF }}
             BUILD_DATE=${{ env.BUILD_DATE }}
-      - name: "Build and push for ARM processors"
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229 #note: newer is available
-        with:
-          context: .
-          file: ./Dockerfile.arm
-          platforms: linux/arm/v7
-          push: true
-          tags: |
-            bkimminich/juice-shop:${{ steps.tag.outputs.tag }}-arm
-          build-args: |
-            VCS_REF=${{ env.VCS_REF }}
-            BUILD_DATE=${{ env.BUILD_DATE }}
+            CYCLONEDX_NPM_VERSION=${{ env.CYCLONEDX_NPM_VERSION }}
   notify-slack:
     if: always()
     needs:

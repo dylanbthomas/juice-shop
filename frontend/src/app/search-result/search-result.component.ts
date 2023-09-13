@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -17,14 +17,13 @@ import { TranslateService } from '@ngx-translate/core'
 import { SocketIoService } from '../Services/socket-io.service'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
-import { dom, library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCartPlus, faEye } from '@fortawesome/free-solid-svg-icons'
 import { Product } from '../Models/product.model'
 import { QuantityService } from '../Services/quantity.service'
 import { DeluxeGuard } from '../app.guard'
 
 library.add(faEye, faCartPlus)
-dom.watch()
 
 interface TableEntry {
   name: string
@@ -40,7 +39,7 @@ interface TableEntry {
   selector: 'app-search-result',
   templateUrl: './search-result.component.html',
   styleUrls: ['./search-result.component.scss']
-})
+  })
 export class SearchResultComponent implements OnDestroy, AfterViewInit {
   public displayedColumns = ['Image', 'Product', 'Description', 'Price', 'Select']
   public tableData!: any[]

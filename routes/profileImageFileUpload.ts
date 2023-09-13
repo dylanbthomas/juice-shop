@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
 import fs = require('fs')
 import { Request, Response, NextFunction } from 'express'
 import { UserModel } from '../models/user'
+import logger from '../lib/logger'
 
-const utils = require('../lib/utils')
+import * as utils from '../lib/utils'
 const security = require('../lib/insecurity')
-const logger = require('../lib/logger')
 const fileType = require('file-type')
 
 module.exports = function fileUpload () {
@@ -43,7 +43,7 @@ module.exports = function fileUpload () {
           res.location(process.env.BASE_PATH + '/profile')
           res.redirect(process.env.BASE_PATH + '/profile')
         } else {
-          next(new Error('Blocked illegal activity by ' + req.connection.remoteAddress))
+          next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
         }
       } else {
         res.status(415)
