@@ -32,9 +32,9 @@ const compilerReleases = {
   '0.1.7': 'soljson-v0.1.7+commit.b4e666cc.js'
 }
 @Component({
-  selector: "app-web3-sandbox",
-  templateUrl: "./web3-sandbox.component.html",
-  styleUrls: ["./web3-sandbox.component.scss"],
+  selector: 'app-web3-sandbox',
+  templateUrl: './web3-sandbox.component.html',
+  styleUrls: ['./web3-sandbox.component.scss']
 })
 export class Web3SandboxComponent {
   constructor (
@@ -112,10 +112,7 @@ contract HelloWorld {
 
   async deploySelectedContract () {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
     try {
@@ -184,10 +181,7 @@ contract HelloWorld {
 
   async invokeFunction (func) {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
     try {
@@ -205,9 +199,9 @@ contract HelloWorld {
       const inputs =
         func.inputValues.trim() !== ''
           ? func.inputValues.split(',').map((value, index) => {
-              const inputType = func.inputs[index].type
-              return this.parseInputValue(value.trim(), inputType)
-            })
+            const inputType = func.inputs[index].type
+            return this.parseInputValue(value.trim(), inputType)
+          })
           : []
       const transactionOptions: ethers.PayableOverrides = {}
       if (this.commonGweiValue > 0) {
@@ -268,10 +262,7 @@ contract HelloWorld {
         await disconnect()
       }
       if (!window.ethereum) {
-        this.snackBarHelperService.open(
-          'Please install a Web3 Wallet like Metamask to proceed.',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_INSTALL_WEB3_WALLET', 'errorBar')
         return
       }
 
@@ -303,10 +294,7 @@ contract HelloWorld {
 
       if (provider && currentChainId !== targetChainId) {
         this.session = false
-        this.snackBarHelperService.open(
-          'Please connect to the Sepolia Network',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_CONNECT_TO_SEPOLIA_NETWORK', 'errorBar')
       } else {
         console.log('Should show ethereum chain now')
         this.session = true

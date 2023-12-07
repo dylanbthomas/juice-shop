@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
-import { RouterModule, Routes } from '@angular/router'
+import { RouterModule, type Routes } from '@angular/router'
 import { ConfigurationService } from '../Services/configuration.service'
 import { OverlayContainer } from '@angular/cdk/overlay'
 import { MatCardModule } from '@angular/material/card'
@@ -14,6 +14,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/markdown/markdown'
 import 'codemirror-solidity/solidity'
+import { TranslateModule } from '@ngx-translate/core'
 
 const routes: Routes = [
   {
@@ -28,14 +29,15 @@ const routes: Routes = [
     CodemirrorModule,
     CommonModule,
     RouterModule.forChild(routes),
+    TranslateModule,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
     MatInputModule,
-    MatSnackBarModule,
+    MatSnackBarModule
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FaucetModule {
   constructor (

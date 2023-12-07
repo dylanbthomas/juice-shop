@@ -5,7 +5,7 @@ describe('/#/deluxe-membership', () => {
       cy.location().then((loc) => {
         cy.visit(
           `/#/deluxe-membership?testDecal=${encodeURIComponent(
-            `../../..${loc.pathname}/redirect?to=https://placekitten.com/g/200/100?x=https://github.com/bkimminich/juice-shop`
+            `../../..${loc.pathname}/redirect?to=https://placekitten.com/g/200/100?x=https://github.com/juice-shop/juice-shop`
           )}`
         )
       })
@@ -25,7 +25,7 @@ describe('/#/deluxe-membership', () => {
         cy.request({
           url: '/rest/deluxe-membership',
           method: 'POST',
-          headers: { Authorization: `Bearer ${token.value}` }
+          headers: { Authorization: `Bearer ${token?.value}` }
         }).then((response) => {
           expect(response.body.status).contains('success')
         })

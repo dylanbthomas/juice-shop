@@ -1,12 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 import { KeysService } from '../Services/keys.service'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
+import { TranslateService } from '@ngx-translate/core'
 import {
   BeeFaucetABI,
   BeeTokenABI,
   nftABI
 } from '../../assets/public/ContractABIs'
-import { getDefaultProvider, ethers, BigNumber } from 'ethers'
+import { getDefaultProvider, ethers, type BigNumber } from 'ethers'
 import {
   createClient,
   connect,
@@ -27,14 +28,15 @@ const BeeTokenAddress = '0x36435796Ca9be2bf150CE0dECc2D8Fab5C4d6E13'
 const BeeFaucetAddress = '0x860e3616aD0E0dEDc23352891f3E10C4131EA5BC'
 
 @Component({
-  selector: "app-faucet",
-  templateUrl: "./faucet.component.html",
-  styleUrls: ["./faucet.component.scss"],
+  selector: 'app-faucet',
+  templateUrl: './faucet.component.html',
+  styleUrls: ['./faucet.component.scss']
 })
 export class FaucetComponent {
   constructor (
     private readonly keysService: KeysService,
     private readonly snackBarHelperService: SnackBarHelperService,
+    private readonly translateService: TranslateService,
     private readonly changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -52,6 +54,9 @@ export class FaucetComponent {
   metamaskAddress = ''
 
   ngOnInit (): void {
+    this.translateService.get('NFT_MINT_TEXT_INTRO').subscribe((translatedString: string) => {
+      this.nftMintText = translatedString
+    })
     this.handleAuth()
     this.checkNftMinted()
     this.nftMintListener()
@@ -59,14 +64,14 @@ export class FaucetComponent {
   }
 
   nftMintListener () {
-  this.keysService.nftMintListen().subscribe(
-    (response) => {
-      console.log(response)
-    },
-    (error) => {
-      console.error(error)
-    }
-  )
+    this.keysService.nftMintListen().subscribe(
+      (response) => {
+        console.log(response)
+      },
+      (error) => {
+        console.error(error)
+      }
+    )
   }
 
   checkNftMinted () {
@@ -76,7 +81,9 @@ export class FaucetComponent {
         this.mintButtonDisabled = challengeSolvedStatus
         this.challengeSolved = challengeSolvedStatus
         if (challengeSolvedStatus) {
-          this.nftMintText = 'Minted Successfully'
+          this.translateService.get('NFT_MINT_TEXT_SUCCESS').subscribe((translatedString: string) => {
+            this.nftMintText = translatedString
+          })
         }
       },
       (error) => {
@@ -143,10 +150,7 @@ export class FaucetComponent {
         await disconnect()
       }
       if (!window.ethereum) {
-        this.snackBarHelperService.open(
-          'Please install a Web3 Wallet like Metamask to proceed.',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_INSTALL_WEB3_WALLET', 'errorBar')
         return
       }
 
@@ -178,10 +182,7 @@ export class FaucetComponent {
 
       if (provider && currentChainId !== targetChainId) {
         this.session = false
-        this.snackBarHelperService.open(
-          'Please connect to the Sepolia Network',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_CONNECT_TO_SEPOLIA_NETWORK', 'errorBar')
       } else {
         console.log('Should show ethereum chain now')
         this.session = true
@@ -191,16 +192,13 @@ export class FaucetComponent {
       console.log('session', this.session)
       this.changeDetectorRef.detectChanges()
     } catch (err) {
-      console.log('An error occured')
+      console.log(err)
     }
   }
 
   async extractBEETokens (amount = this.withdrawAmount) {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
     try {
@@ -236,13 +234,12 @@ export class FaucetComponent {
 
   async mintNFT () {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
-    this.nftMintText = 'Awaiting Approval'
+    this.translateService.get('NFT_MINT_TEXT_AWAITING_APPROVAL').subscribe((translatedString: string) => {
+      this.nftMintText = translatedString
+    })
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const signer = provider.getSigner()
@@ -258,29 +255,35 @@ export class FaucetComponent {
       )
 
       await approvalTx.wait()
-      this.nftMintText = 'Confirm Mint...'
+      this.translateService.get('NFT_MINT_TEXT_CONFIRM').subscribe((translatedString: string) => {
+        this.nftMintText = translatedString
+      })
 
       const contract = new ethers.Contract(nftAddress, nftABI, signer)
 
       const transaction = await contract.mintNFT()
       console.log(transaction)
-      this.nftMintText = 'Mint in Process...'
+      this.translateService.get('NFT_MINT_TEXT_IN_PROGRESS').subscribe((translatedString: string) => {
+        this.nftMintText = translatedString
+      })
 
       const mintConfirmation = await transaction.wait()
       console.log(mintConfirmation)
       if (mintConfirmation) {
-        this.nftMintText = 'Successfully Minted'
+        this.translateService.get('NFT_MINT_TEXT_SUCCESS').subscribe((translatedString: string) => {
+          this.nftMintText = translatedString
+        })
         setTimeout(() => {
           this.keysService.verifyNFTWallet(this.metamaskAddress).subscribe(
             (response) => {
               if (response.success) {
-              this.successResponse = response.status
-              this.mintButtonDisabled = true
+                this.successResponse = response.status
+                this.mintButtonDisabled = true
               }
             },
             (error) => {
-            console.error(error)
-            this.successResponse = false
+              console.error(error)
+              this.successResponse = false
             }
           )
         }, 3500)
