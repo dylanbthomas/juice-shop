@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2023 Bjoern Kimminich & the OWASP Juice Shop contributors.
+ * Copyright (c) 2014-2024 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -16,13 +16,11 @@ import { QRCodeModule } from 'anuglar2-qrcode'
 import { ClipboardModule } from 'ngx-clipboard'
 import { FileUploadModule } from 'ng2-file-upload'
 import { SlideshowModule } from 'ng-simple-slideshow'
-import { NgxSpinnerModule } from 'ngx-spinner'
 import { AppComponent } from './app.component'
 import { AboutComponent } from './about/about.component'
 import { AdministrationComponent } from './administration/administration.component'
 import { BasketComponent } from './basket/basket.component'
 import { LoginComponent } from './login/login.component'
-import { ScoreBoardComponent } from './score-board/score-board.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { WelcomeComponent } from './welcome/welcome.component'
 import { WelcomeBannerComponent } from './welcome-banner/welcome-banner.component'
@@ -72,7 +70,6 @@ import { ImageCaptchaService } from './Services/image-captcha.service'
 import { KeysService } from './Services/keys.service'
 import { AddressService } from './Services/address.service'
 import { QuantityService } from './Services/quantity.service'
-import { FeatureFlagService } from './Services/feature-flag.service'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatToolbarModule } from '@angular/material/toolbar'
@@ -103,7 +100,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatRadioModule } from '@angular/material/radio'
 import { MatBadgeModule } from '@angular/material/badge'
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs'
-import { ScoreBoardPreviewModule } from './score-board-preview/score-board-preview.module'
+import { ScoreBoardModule } from './score-board/score-board.module'
 import { TwoFactorAuthComponent } from './two-factor-auth/two-factor-auth.component'
 import { DataExportComponent } from './data-export/data-export.component'
 import { LastLoginIpComponent } from './last-login-ip/last-login-ip.component'
@@ -153,7 +150,6 @@ export function HttpLoaderFactory (http: HttpClient) {
     AdministrationComponent,
     BasketComponent,
     LoginComponent,
-    ScoreBoardComponent,
     NavbarComponent,
     WelcomeComponent,
     WelcomeBannerComponent,
@@ -228,7 +224,6 @@ export function HttpLoaderFactory (http: HttpClient) {
     QRCodeModule,
     FileUploadModule,
     ClipboardModule,
-    NgxSpinnerModule,
     MatToolbarModule,
     MatIconModule,
     FormsModule,
@@ -263,7 +258,7 @@ export function HttpLoaderFactory (http: HttpClient) {
     MatChipsModule,
     NgxTextDiffModule,
     HighlightModule,
-    ScoreBoardPreviewModule
+    ScoreBoardModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
@@ -314,8 +309,7 @@ export function HttpLoaderFactory (http: HttpClient) {
     WalletService,
     OrderHistoryService,
     DeliveryService,
-    PhotoWallService,
-    FeatureFlagService
+    PhotoWallService
   ],
   bootstrap: [AppComponent]
 })
